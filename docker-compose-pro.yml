@@ -1,0 +1,26 @@
+
+services:
+
+  wordpress:
+    image: wordpress:php8.2-fpm
+    container_name: wordpress
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./wordpress:/var/www/html
+      - ./config/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+
+  nginx-frontend:
+    image: nginx:alpine
+    container_name: nginx-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./wordpress:/var/www/html
+      - nginx_cache:/var/cache/nginx
+
+volumes:
+  nginx_cache:
